@@ -10,20 +10,31 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Install Theos
         run: |
           git clone --recursive https://github.com/theos/theos.git "$HOME/theos"
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
+      - name: Install ldid
+        run: |
+          brew install ldid
+
       - name: Build dylib
         run: |
           ls -la
           make
 
+      - name: Collect dylib
+        run: |
+          mkdir -p output
+          find . -name "DunenBLELogger.dylib" -print -exec cp {} output/ \;
+          ls -la output
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: DunenBLELogger-dylib
-          path: .theos/obj/DunenBLELogger.dylib
+          path: output/DunenBLELogger.dylib
