@@ -10,8 +10,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Install Theos
         run: |
@@ -20,17 +19,11 @@ jobs:
 
       - name: Build dylib
         run: |
-          make clean
+          ls -la
           make
-
-      - name: Collect dylib
-        run: |
-          mkdir -p output
-          find . -name "DunenBLELogger.dylib" -print -exec cp {} output/ \;
-          ls -la output
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: DunenBLELogger-dylib
-          path: output/DunenBLELogger.dylib
+          path: .theos/obj/DunenBLELogger.dylib
